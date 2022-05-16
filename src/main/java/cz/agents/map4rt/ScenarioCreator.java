@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jgrapht.DirectedGraph;
@@ -65,11 +60,11 @@ public class ScenarioCreator {
 
 
     private static RelocationTaskCoordinationProblem problem;
-    
-    public static void createFromArgs(String[] args) {
+
+    public static Parameters createFromArgs(String[] args) {
     	simulationStartedAt = System.currentTimeMillis();
     	Parameters params = new Parameters();
-    	 	
+
     	String xml = Args.getArgumentValue(args, "-problemfile", true);
     	String methodStr = Args.getArgumentValue(args, "-method", true);
     	String maxTimeStr = Args.getArgumentValue(args, "-maxtime", true);
@@ -88,6 +83,8 @@ public class ScenarioCreator {
     	params.nTasks = Integer.parseInt(nTasksStr);
         String seedStr = Args.getArgumentValue(args, "-seed", true);
     	params.random = new Random(Integer.parseInt(seedStr));
+
+      boolean agentsRemote = Args.isArgumentSet(args, "-agentsRemote");
     	
 		File file = new File(xml);
 	    params.fileName = file.getName();
@@ -114,10 +111,42 @@ public class ScenarioCreator {
 	    	params.runtimeDeadlineMs = timeout;
 	    	killAt(System.currentTimeMillis() + timeout, params.summaryPrefix, params.noOfClusters);
 	    }
-	    
+
+      if(agentsRemote) {
+        return params;
+      }
     	create(problem, method, params);
+      return null;
     }
 
+
+    public static void startVisualization(Parameters params) {
+      VisUtil.initVisualization(problem.getEnvironment(), "Trajectory Tools (Cobra)", params.bgImageFile, params.timeStep/2);
+      VisUtil.visualizeRelocationTaskCoordinationProblem(problem);
+
+      // Simulation Control Layer
+      VisManager.registerLayer(SimulationControlLayer.create(new SimulationControlProvider() {
+
+        @Override
+        public void setSpeed(float f) {}
+
+        @Override
+        public void setRunning(boolean running) {}
+
+        @Override
+        public boolean isRunning() { return true; }
+
+        @Override
+        public double getTime() {
+          return (CommonTime.currentTimeMs() / 1000.0);
+        }
+
+        @Override
+        public float getSpeed() { return 1; }
+      }));
+
+      initAgentVisualization(new ArrayList<>(), params.timeStep);
+    }
 
     private static void killAt(final long killAtMs, final String summaryPrefix, final int clusters) {
     	Thread t = new Thread() {
