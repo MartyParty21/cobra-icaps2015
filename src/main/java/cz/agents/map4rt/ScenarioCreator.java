@@ -124,7 +124,7 @@ public class ScenarioCreator {
     }
 
 
-    public static void startVisualization(List<Agent> agents, Parameters params) {
+    public static void startRemoteVisualization(List<Agent> agents, Parameters params) {
       VisUtil.initVisualization(problem.getEnvironment(), "Trajectory Tools (Cobra)", params.bgImageFile, params.timeStep/2);
       VisUtil.visualizeRelocationTaskCoordinationProblem(problem);
 
