@@ -61,6 +61,10 @@ public class ScenarioCreator {
 
     private static RelocationTaskCoordinationProblem problem;
 
+    public static RelocationTaskCoordinationProblem getProblem() {
+      return problem;
+    }
+
     public static Parameters createFromArgs(String[] args) {
     	simulationStartedAt = System.currentTimeMillis();
     	Parameters params = new Parameters();
@@ -120,7 +124,7 @@ public class ScenarioCreator {
     }
 
 
-    public static void startVisualization(Parameters params) {
+    public static void startVisualization(List<Agent> agents, Parameters params) {
       VisUtil.initVisualization(problem.getEnvironment(), "Trajectory Tools (Cobra)", params.bgImageFile, params.timeStep/2);
       VisUtil.visualizeRelocationTaskCoordinationProblem(problem);
 
@@ -145,7 +149,7 @@ public class ScenarioCreator {
         public float getSpeed() { return 1; }
       }));
 
-      initAgentVisualization(new ArrayList<>(), params.timeStep);
+      initAgentVisualization(agents, params.timeStep);
     }
 
     private static void killAt(final long killAtMs, final String summaryPrefix, final int clusters) {
