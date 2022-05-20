@@ -125,8 +125,13 @@ public abstract class PlanningAgent extends Agent {
 		}
 		return dObstInflated;
 	}
-	
-	@Override
+
+  @Override
+  public void setTrajectory(EvaluatedTrajectory trajectory) {
+    currentTrajectory = trajectory;
+  }
+
+  @Override
 	public EvaluatedTrajectory getCurrentTrajectory() {
 		return currentTrajectory;
 	}

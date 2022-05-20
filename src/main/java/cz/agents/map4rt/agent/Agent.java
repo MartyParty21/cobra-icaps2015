@@ -239,6 +239,7 @@ public abstract class Agent {
         
         return (long) (path.getWeight()/maxSpeed);
 	}
-	
 
+
+  public void setTrajectory(EvaluatedTrajectory trajectory) {};
 }
