@@ -12,7 +12,15 @@ public class Token {
 	
 	static boolean locked;
 	static Map<String, Region> regions = new HashMap<String, Region>();
-	
+
+  public static void setAllRegions(Map<String, Region> regs) {
+    regions = regs;
+  }
+
+  public static Map<String, Region> getAllRegions() {
+    return regions;
+  }
+
 	static List<Region> getReservedRegions(String askingAgent) {
 		List<Region> reservedRegions =  new LinkedList<Region>();
 		for (String agentName : regions.keySet()) {
