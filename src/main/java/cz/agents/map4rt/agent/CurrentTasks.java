@@ -39,5 +39,8 @@ public class CurrentTasks {
 		tasks.put(name, destination);
 		return destination;
 	}
-	
+
+  public static void clearTasks() {
+    tasks = new HashMap<>();
+  }
 }
