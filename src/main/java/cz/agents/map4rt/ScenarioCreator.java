@@ -3,9 +3,11 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import cz.agents.alite.vis.Vis;
 import org.apache.log4j.Logger;
 import org.jgrapht.DirectedGraph;
 
@@ -53,11 +55,13 @@ public class ScenarioCreator {
     
     static long simulationStartedAt;
     static Logger LOGGER = Logger.getLogger(ScenarioCreator.class);
-		
-    enum Method {
-    	COBRA,  
-        ORCA }
 
+
+
+  enum Method {
+    	COBRA,  
+        ORCA;
+  }
 
     private static RelocationTaskCoordinationProblem problem;
 
@@ -89,8 +93,12 @@ public class ScenarioCreator {
     	params.random = new Random(Integer.parseInt(seedStr));
 
       boolean agentsRemote = Args.isArgumentSet(args, "-agentsRemote");
-    	
-		File file = new File(xml);
+
+      File file = new File(xml);
+      if(!file.exists()) {
+        LOGGER.info("Did not find problem file using the direct path. Will add prefix");
+        file = new File("project/cobra-icaps2015/experiment/instances/" + xml);
+      }
 	    params.fileName = file.getName();
 	    
 	    // Load the PNG image as a background, if provided
@@ -127,6 +135,7 @@ public class ScenarioCreator {
     public static void startRemoteVisualization(List<Agent> agents, Parameters params) {
       VisUtil.initVisualization(problem.getEnvironment(), "Trajectory Tools (Cobra)", params.bgImageFile, params.timeStep/2);
       VisUtil.visualizeRelocationTaskCoordinationProblem(problem);
+
 
       // Simulation Control Layer
       VisManager.registerLayer(SimulationControlLayer.create(new SimulationControlProvider() {
