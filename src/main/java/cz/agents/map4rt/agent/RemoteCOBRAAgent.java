@@ -9,11 +9,14 @@ import tt.euclid2i.probleminstance.Environment;
 import java.util.Random;
 
 public class RemoteCOBRAAgent extends COBRAAgent {
+  private boolean wantsToStartTask;
+
   public RemoteCOBRAAgent(String name, Point start, int nTasks, Environment env, DirectedGraph<Point, Line> planningGraph, int agentBodyRadius, float maxSpeed, int maxTime, int timeStep, Random random) {
     super(name, start, nTasks, env, planningGraph, agentBodyRadius, maxSpeed, maxTime, timeStep, random);
+    wantsToStartTask = false;
   }
 
-  public void tick(int ms, boolean hasToken) {
+  public void tick(int ms) {
     if (currentTask != null && !currentTaskTouchedGoal && getCurrentPos().equals(currentTask)) {
       // DESTINATION TOUCHED
       long prolongT = (CommonTime.currentTimeMs() - lastTaskTravelStartedAt) - this.currentTaskBaseDuration;
@@ -32,20 +35,7 @@ public class RemoteCOBRAAgent extends COBRAAgent {
 
     if (currentTask == null && CommonTime.currentTimeMs() > issueFirstTaskAt && nTasks > 0) {
       lastTaskIssuedAt = CommonTime.currentTimeMs();
-      if(hasToken) {
-        long waitDuration = CommonTime.currentTimeMs() - lastTaskIssuedAt;
-        waitSum += waitDuration;
-        waitSumSq += waitDuration * waitDuration;
-
-        currentTask = CurrentTasks.assignRandomDestination(getName(), random);
-        currentTaskBaseDuration = getTaskDuration(getCurrentPos(), currentTask);
-        baseSum += currentTaskBaseDuration;
-        baseSumSq += currentTaskBaseDuration * currentTaskBaseDuration;
-
-        LOGGER.info(getName() + " Carrying out new task " + currentTask + ", baseline duration is " + currentTaskBaseDuration + ". There is " + nTasks + " tasks in the stack to be carried out.");
-        handleNewTask(currentTask);
-        nTasks--;
-      }
+      wantsToStartTask = true;
     }
 
     if (currentTask != null && currentTaskDestinationReached()) {
@@ -55,5 +45,25 @@ public class RemoteCOBRAAgent extends COBRAAgent {
       }
       currentTask = null;
     }
+  }
+
+  public void createNewTask() {
+    wantsToStartTask = false;
+    long waitDuration = CommonTime.currentTimeMs() - lastTaskIssuedAt;
+    waitSum += waitDuration;
+    waitSumSq += waitDuration * waitDuration;
+
+    currentTask = CurrentTasks.assignRandomDestination(getName(), random);
+    currentTaskBaseDuration = getTaskDuration(getCurrentPos(), currentTask);
+    baseSum += currentTaskBaseDuration;
+    baseSumSq += currentTaskBaseDuration * currentTaskBaseDuration;
+
+    LOGGER.info(getName() + " Carrying out new task " + currentTask + ", baseline duration is " + currentTaskBaseDuration + ". There is " + nTasks + " tasks in the stack to be carried out.");
+    handleNewTask(currentTask);
+    nTasks--;
+  }
+
+  public boolean wantsToStartTask() {
+    return wantsToStartTask;
   }
 }
