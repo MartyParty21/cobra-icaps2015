@@ -66,4 +66,8 @@ public class RemoteCOBRAAgent extends COBRAAgent {
   public boolean wantsToStartTask() {
     return wantsToStartTask;
   }
+
+  public String getRemainingTasks() {
+    return String.valueOf(nTasks);
+  }
 }

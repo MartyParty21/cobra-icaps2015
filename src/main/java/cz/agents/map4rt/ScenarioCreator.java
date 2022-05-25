@@ -461,11 +461,11 @@ public class ScenarioCreator {
 	    	System.exit(0);
     }
 	
-	static long avg(long sum, long n) {
+	public static long avg(long sum, long n) {
 		return sum / n;
 	}
 	
-	static long sd(long sumSq, long mean, long n) {
+	public static long sd(long sumSq, long mean, long n) {
 		double var = (sumSq/n) - (mean*mean); 
 		return (long) Math.round(Math.sqrt(var));
 	}
