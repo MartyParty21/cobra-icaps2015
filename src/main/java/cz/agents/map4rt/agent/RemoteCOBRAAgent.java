@@ -8,7 +8,15 @@ import tt.euclid2i.probleminstance.Environment;
 
 import java.util.Random;
 
+/**
+ * A remote version of the COBRA agent, to work on a distributed system
+ *
+ * @author Martin Rokyta (rokytmar@fel.cvut.cz)
+ */
 public class RemoteCOBRAAgent extends COBRAAgent {
+  /**
+   * Flag specifying whether the agent needs a token to start planning a trajectory to new task
+   */
   private boolean wantsToStartTask;
 
   public RemoteCOBRAAgent(String name, Point start, int nTasks, Environment env, DirectedGraph<Point, Line> planningGraph, int agentBodyRadius, float maxSpeed, int maxTime, int timeStep, Random random) {
@@ -16,6 +24,10 @@ public class RemoteCOBRAAgent extends COBRAAgent {
     wantsToStartTask = false;
   }
 
+  /**
+   * Called each loop to update agent's state
+   * @param ms
+   */
   public void tick(int ms) {
     if (currentTask != null && !currentTaskTouchedGoal && getCurrentPos().equals(currentTask)) {
       // DESTINATION TOUCHED
@@ -33,6 +45,7 @@ public class RemoteCOBRAAgent extends COBRAAgent {
       prolongRSumSq += prolongR * prolongR;
     }
 
+    // Agent wants to start plannign
     if (currentTask == null && CommonTime.currentTimeMs() > issueFirstTaskAt && nTasks > 0) {
       lastTaskIssuedAt = CommonTime.currentTimeMs();
       wantsToStartTask = true;
@@ -47,6 +60,9 @@ public class RemoteCOBRAAgent extends COBRAAgent {
     }
   }
 
+  /**
+   * Called when agent holds a token to plan new trajectory
+   */
   public void createNewTask() {
     wantsToStartTask = false;
     long waitDuration = CommonTime.currentTimeMs() - lastTaskIssuedAt;
@@ -63,11 +79,18 @@ public class RemoteCOBRAAgent extends COBRAAgent {
     nTasks--;
   }
 
+  /**
+   * @return true if agent needs a token to start planning
+   */
   public boolean wantsToStartTask() {
     return wantsToStartTask;
   }
 
-  public String getRemainingTasks() {
-    return String.valueOf(nTasks);
+  /**
+   * Gets the amount of task that were not yet planned
+   * @return number of tasks yet to be planned
+   */
+  public int getRemainingTasks() {
+    return nTasks;
   }
 }
