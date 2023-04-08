@@ -241,5 +241,13 @@ public abstract class Agent {
 	}
 
 
-  public void setTrajectory(EvaluatedTrajectory trajectory) {};
+    public void setTrajectory(EvaluatedTrajectory trajectory) {};
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
 }
