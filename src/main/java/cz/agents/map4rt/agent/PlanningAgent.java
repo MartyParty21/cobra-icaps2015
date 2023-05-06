@@ -30,7 +30,7 @@ import tt.jointeuclid2ni.probleminstance.RelocationTask;
  */
 public abstract class PlanningAgent extends Agent {
 	
-	final int T_PLANNING = 3000;
+	final int T_PLANNING = 5000;
 	
 	Logger LOGGER = Logger.getLogger(PlanningAgent.class);
 	
