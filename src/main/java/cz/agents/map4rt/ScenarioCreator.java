@@ -1,9 +1,6 @@
 package cz.agents.map4rt;
 import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -69,7 +66,23 @@ public class ScenarioCreator {
       return problem;
     }
 
-    public static Parameters createFromArgs(String[] args) {
+	private static File problemFile = null;
+
+	public static File getProblemFile() {
+		return problemFile;
+	}
+
+	private static String problemString = null;
+
+	public static String getProblemString() {
+		return problemString;
+	}
+
+	public static void setProblemString(String problemStr) {
+		problemString = problemStr;
+	}
+
+	public static Parameters createFromArgs(String[] args) {
     	simulationStartedAt = System.currentTimeMillis();
     	Parameters params = new Parameters();
 
@@ -99,8 +112,11 @@ public class ScenarioCreator {
         LOGGER.info("Did not find problem file using the direct path. Will add prefix");
         file = new File("project/cobra-icaps2015/experiment/instances/" + xml);
       }
-	    params.fileName = file.getName();
-	    
+	  if(file.exists()) {
+		problemFile = file;
+		params.fileName = file.getName();
+	  }
+
 	    // Load the PNG image as a background, if provided
 	    if (bgImgFileName != null) {
 		    File bgImgFile = new File(bgImgFileName);
@@ -110,7 +126,11 @@ public class ScenarioCreator {
         }
 
 	    try {
-			problem = TrajectoryCoordinationProblemXMLDeserializer.deserialize(new FileInputStream(file));
+			if(problemString != null) {
+				problem = TrajectoryCoordinationProblemXMLDeserializer.deserialize(new ByteArrayInputStream(problemString.getBytes()));
+			} else {
+				problem = TrajectoryCoordinationProblemXMLDeserializer.deserialize(new FileInputStream(file));
+			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
