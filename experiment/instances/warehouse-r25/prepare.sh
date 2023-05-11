@@ -6,15 +6,14 @@
 #radius=27
 #gridedgelen="65"
 #maxtime=600000
-#agents="1 5 10 15 20 30 35"
+#agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
 
 #--warehouse
 envname=warehouse-r25-docks
 instancesetname="warehouse-r25"
 radius=25
 gridedgelen="54"
-maxtime=600000
-agents="1 5 10 15 20 30 40 50"
+agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
 
 #--empty-hall
 #envname=empty-hall-r25-docks
@@ -22,7 +21,7 @@ agents="1 5 10 15 20 30 40 50"
 #radius=20
 #gridedgelen="54"
 #maxtime=600000
-#agents="1 5 10 15 20 30 40 50"
+agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
 
 
 denvxml="d-envs/$envname.xml"
@@ -40,7 +39,7 @@ cp prepare.sh $instancefolder/
 instance=0
 for nagents in $agents
 do
-    for seed in {1..10}
+    for seed in {1..5}
     do
         let instance=instance+1
 	    # create a problem instance file
@@ -50,7 +49,7 @@ do
         ## ConflictGenerator
         java -XX:+UseSerialGC -cp solver.jar -Dlog4j.configuration="file:$PWD/log4j.custom" tt.jointeuclid2ni.probleminstance.generator.GenerateRTInstance -env $denvxml -nagents $nagents -radius $radius -maxspeed $maxspeed  -seed $seed -outfile $instancefile
                
-        algs="ORCA COBRA"
+        algs="COBRA"
         
         for alg in $algs
         do
