@@ -13,6 +13,7 @@
 #instancesetname="warehouse-r25"
 #radius=25
 #gridedgelen="54"
+#maxtime=600000
 #agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
 
 #--empty-hall
