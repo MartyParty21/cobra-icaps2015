@@ -52,7 +52,7 @@ public class COBRAAgent extends PlanningAgent {
 		// nearest timestep in past
 		int minTime = ((int) Math.floor( (double) CommonTime.currentTimeMs() / (double) timeStep) ) * timeStep;
 		// start at a multiple of timestep
-		int depTime = ((int) Math.ceil( (double) (CommonTime.currentTimeMs() + T_PLANNING) / (double) timeStep) ) * timeStep;
+		int depTime = ((int) Math.ceil( (double) (CommonTime.currentTimeMs() + T_PLANNING / 5) / (double) timeStep) ) * timeStep;
 		
 		EvaluatedTrajectory traj = getBestResponseTrajectory(
 				getCurrentPos(), minTime, depTime, task,
