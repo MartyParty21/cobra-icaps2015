@@ -1,35 +1,33 @@
 #!/bin/bash
 
-#--ubremen
-#envname=ubremen-r27-docks
-#instancesetname="ubremen-r27"
-#radius=27
-#gridedgelen="65"
-#maxtime=600000
-#agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
+case $1 in
+  ubremen-r27)
+    envname=ubremen-r27-docks
+    instancesetname="ubremen-r27"
+    radius=27
+    ;;
+  warehouse-r25)
+    envname=warehouse-r25-docks
+    instancesetname="warehouse-r25"
+    radius=25
+    ;;
+  empty-hall-r25)
+    envname=empty-hall-r25-docks
+    instancesetname="empty-hall-r25"
+    radius=25
+    ;;
+esac
 
-#--warehouse
-#envname=warehouse-r25-docks
-#instancesetname="warehouse-r25"
-#radius=25
-#gridedgelen="54"
-#maxtime=600000
-#agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
-
-#--empty-hall
-envname=empty-hall-r25-docks
-instancesetname="empty-hall-r25"
-radius=20
-gridedgelen="54"
+gridedgelen="65"
 maxtime=600000
-agents="1 2 5 10 12 15 20 25 30 25 35 40 45 48"
+agents="1 2 3 5 7 8 10 12 15"
 
 
 denvxml="d-envs/$envname.xml"
 instancefolder="instances/$instancesetname"
 maxspeed="0.05"
 timestep=`echo "import math;print(int(math.ceil($gridedgelen/(2*$maxspeed))))" | python`
-ntasks="4"
+ntasks="3"
 
 echo "Preparing instanceset $instancesetname. Will use timestep $timestep."
 
@@ -54,7 +52,7 @@ do
         
         for alg in $algs
         do
-		    summaryprefix="$envname;$instance;$nagents;$radius;$seed;$timestep;$maxtime;$alg;"
+		    summaryprefix="$envname;$instance;$nagents;$radius;$seed;$timestep;$maxtime;$alg$2;"
 	        echo -method $alg -problemfile $instancefile -ntasks $ntasks -timestep $timestep -maxtime $maxtime -timeout $maxtime -seed $seed -summaryprefix "$summaryprefix" >> $instancefolder/data.in           
         done
 
