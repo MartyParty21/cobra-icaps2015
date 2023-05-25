@@ -20,7 +20,7 @@ esac
 
 gridedgelen="65"
 maxtime=600000
-agents="1 2 3 5 7 8 10 12 15"
+agents="1 2 3 5 7 9 10 12 15"
 
 
 denvxml="d-envs/$envname.xml"
